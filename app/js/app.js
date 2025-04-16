@@ -52,9 +52,11 @@ async function create_record(event) {
     const current_date = new Date().toISOString().split('T')[0];
     const shareholder_value = parseInt(document.getElementById("how-many-shareholders").value || "1");
 
+    const placeholder_deal_name = `${account_name}/for/Pre-Approval`;
+
     const deals_data = {
         "Account_Name": account_id,
-        "Deal_Name": account_name,
+        "Deal_Name": placeholder_deal_name,
         "Type": "Pre-Approval",
         "Closing_Date": current_date,
         "Stage": "Closed Won",
@@ -74,10 +76,31 @@ async function create_record(event) {
         const dealInsertRes = await ZOHO.CRM.API.insertRecord({
             Entity: "Deals",
             APIData: deals_data,
-            Trigger: ["workflow"],
+            Trigger: []
         });
 
         const deal_id = dealInsertRes.data[0].details.id;
+
+
+        const getDeal = await ZOHO.CRM.API.getRecord({
+            Entity: "Deals",
+            RecordID: deal_id
+        });
+        const deal_number = getDeal.data[0].Deal_Control_Number;
+
+        const updated_deal_name = `${deal_number}/${account_name}/for/Pre-Approval`;
+
+        const updateDealRes = await ZOHO.CRM.API.updateRecord({
+            Entity: "Deals",
+            APIData: {
+                "id": deal_id, 
+                "Deal_Name": updated_deal_name
+            }
+        });
+
+        const updated_deal_id = updateDealRes.data[0].details.id
+
+        console.log("UPDATED DEAL ID: ", updated_deal_id);
 
         const quotes_data = {
             "Subject": "TLZ Internal - IFZA Pre-approval",
@@ -94,7 +117,7 @@ async function create_record(event) {
             "Quote_Linked_to_Prospect": true,
             "Valid_Till": current_date,
             "Contact_Name": contact_id,
-            "Deal_Name": deal_id,
+            "Deal_Name": updated_deal_id,
             "Layout": "3769920000000238501"
         };        
 
