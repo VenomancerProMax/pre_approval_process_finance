@@ -85,7 +85,7 @@ async function create_record(event) {
                 {
                     "product": product_id,
                     "quantity": shareholder_value,
-                    "discount": shareholder_value * product_unit_price
+                    "Discount": shareholder_value * product_unit_price
                 }
             ],
             "Account_Name": account_id,
@@ -106,7 +106,7 @@ async function create_record(event) {
         const quote_id = quoteInsertRes.data[0].details.id;
         const quotes_url = "https://crm.zoho.com/crm/org682300086/tab/Quotes/" +quote_id;
         window.open(quotes_url, '_blank').focus();
-        showCustomAlert("Prospect and Quotes record has been created. Please close the form.");
+        showCustomAlert("Prospect and Quote record has been created. Please close the form.");
 
         console.log("Quotes record created successfully:", quoteInsertRes);
     } catch (error) {
