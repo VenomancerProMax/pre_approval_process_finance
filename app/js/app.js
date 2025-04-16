@@ -59,12 +59,12 @@ async function create_record(event) {
         "Deal_Name": placeholder_deal_name,
         "Type": "Pre-Approval",
         "Closing_Date": current_date,
-        "Stage": "Closed Won",
         "Clearance_for_Dashboard_Commission": true,
         "Clearance_for_Processing": true,
         "Date_Commission_Clearance": current_date,
         "Date_Processing_Clearance": current_date,
         "Contact_Name": contact_id,
+        "Stage": "New Prospect",
         "Email_Address": email,
         "Mobile": mobile_number,
         "Layout": "3769920000000091023",
@@ -88,19 +88,20 @@ async function create_record(event) {
         });
         const deal_number = getDeal.data[0].Deal_Control_Number;
 
-        const updated_deal_name = `${deal_number}/${account_name}/for/Pre-Approval`;
+        const updated_deal_name = `${deal_number}-${account_name} for Pre-Approval`;
 
         const updateDealRes = await ZOHO.CRM.API.updateRecord({
             Entity: "Deals",
             APIData: {
                 "id": deal_id, 
-                "Deal_Name": updated_deal_name
+                "Deal_Name": updated_deal_name,
+                "Stage": "Closed Won"
             }
         });
 
         const updated_deal_id = updateDealRes.data[0].details.id
-
         console.log("UPDATED DEAL ID: ", updated_deal_id);
+        console.log("UPDATED DEAL NAME: " , updated_deal_name);
 
         const quotes_data = {
             "Subject": "TLZ Internal - IFZA Pre-approval",
