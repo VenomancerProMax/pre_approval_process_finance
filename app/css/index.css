@@ -1,0 +1,99 @@
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: 'Lato', Arial, sans-serif;
+font-size: 14px;
+}
+
+body {
+background-color: #f3f4f6;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+}
+
+.form-container {
+background-color: #fff;
+padding: 30px 40px;
+border-radius: 10px;
+box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+max-width: 400px;
+width: 100%;
+}
+
+form label {
+display: block;
+margin-bottom: 8px;
+font-weight: bold;
+color: #333;
+}
+
+.currency-field {
+margin-bottom: 20px;
+}
+
+.currency-field input[type="number"] {
+width: 100%;
+padding: 10px 12px;
+border: 1px solid #ccc;
+border-radius: 6px;
+font-size: 14px;
+transition: border-color 0.3s;
+}
+
+.currency-field input[type="number"]:focus {
+border-color: #4A90E2;
+outline: none;
+}
+
+.submit-btn {
+width: 100%;
+padding: 12px;
+background-color: #4A90E2;
+color: #fff;
+border: none;
+border-radius: 6px;
+font-size: 15px;
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+background-color: #357ABD;
+}
+
+/* Remove number input spinners for Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+/* Remove number input spinners for Firefox */
+input[type="number"] {
+-moz-appearance: textfield;
+}
+
+.custom-alert-content {
+background-color: #fff;
+padding: 24px 32px;
+border-radius: 12px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+text-align: center;
+max-width: 90%;
+width: 360px;
+font-family: sans-serif;
+}
+
+.custom-alert-content p {
+margin-bottom: 16px;
+font-size: 16px;
+color: #333;
+}
+
+.hidden {
+display: none;
+}
