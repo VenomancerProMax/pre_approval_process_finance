@@ -1,4 +1,4 @@
-let account_id, prospect_number, account_name, contact_id, prospect_name, mobile_number, email;
+let account_id, prospect_number, account_name, contact_id, prospect_name, mobile_number, email, product_id, product_unit_price;
 
 function showCustomAlert(message) {
     const alertBox = document.getElementById("custom-alert");
@@ -11,7 +11,6 @@ function hideCustomAlert() {
     const alertBox = document.getElementById("custom-alert");
     alertBox.classList.add("hidden");
 }
-
 
 // Initialize ZOHO embedded app
 ZOHO.embeddedApp.on("PageLoad", async (entity) => {
@@ -26,7 +25,6 @@ ZOHO.embeddedApp.on("PageLoad", async (entity) => {
         account_name = account_data.Account_Name;
         contact_id = account_data.Primary_Contact.id;
 
-
         // CONTACTS DATA
         const contact_response = await ZOHO.CRM.API.getRecord({
             Entity: "Contacts", approved: "both", RecordID: contact_id
@@ -35,7 +33,14 @@ ZOHO.embeddedApp.on("PageLoad", async (entity) => {
         mobile_number = contact_data.Mobile;
         email = contact_data.Email;
 
-        console.log("CONTACTS DATA: ", contact_data);
+        // PRODUCT DATA
+        const product_response = await ZOHO.CRM.API.getRecord({
+            Entity: "Products", approved: "both", RecordID: "3769920000000832254"
+        });
+        const product_data = product_response.data[0];
+        product_id = product_data.id;
+        product_unit_price = product_data.Unit_Price;
+
     } catch (error) {
         console.log(error);
     }
@@ -45,6 +50,7 @@ async function create_record(event) {
     event.preventDefault();
 
     const current_date = new Date().toISOString().split('T')[0];
+    const shareholder_value = parseInt(document.getElementById("how-many-shareholders").value || "1");
 
     const deals_data = {
         "Account_Name": account_id,
@@ -65,45 +71,46 @@ async function create_record(event) {
     };
 
     try {
-        const insertResponse = await ZOHO.CRM.API.insertRecord({
+        const dealInsertRes = await ZOHO.CRM.API.insertRecord({
             Entity: "Deals",
             APIData: deals_data,
-            Trigger: [],
-        })
-        console.log("Deals record created successfully: ", insertResponse);
-    } catch (error) {
-        console.error("Error inserting deals record:", error);
-    }
+            Trigger: ["workflow"],
+        });
 
-    const quotes_data = {
-        "Subject": "TLZ Internal - IFZA Pre-approval",
-        "Product_Name": "3769920000000832254",
-        "Quantity": document.getElementById("how-many-shareholders").value,
-        "Finance_Clearance": true,
-        "Process_Clearance": true,
-        "Quote_Linked_to_Prospect": true,
-        "Valid_Till": current_date,
-        "Contact_Name": contact_id,
-        "Layout": "3769920000000238501"
-    };
+        const deal_id = dealInsertRes.data[0].details.id;
 
-    try {
-        const response = await ZOHO.CRM.API.insertRecord({
+        const quotes_data = {
+            "Subject": "TLZ Internal - IFZA Pre-approval",
+            "Product_Details": [
+                {
+                    "product": product_id,
+                    "quantity": shareholder_value,
+                    "discount": shareholder_value * product_unit_price
+                }
+            ],
+            "Account_Name": account_id,
+            "Finance_Clearance": true,
+            "Process_Clearance": true,
+            "Quote_Linked_to_Prospect": true,
+            "Valid_Till": current_date,
+            "Contact_Name": contact_id,
+            "Deal_Name": deal_id,
+            "Layout": "3769920000000238501"
+        };        
+
+        const quoteInsertRes = await ZOHO.CRM.API.insertRecord({
             Entity: "Quotes",
-            APIData: quotes_data
+            APIData: quotes_data,
+            Trigger: ["workflow"],
         });
-    
-        const quote_data = response.data;
-        quote_data.forEach((related_record) => {
-            const quote_id = related_record.details.id;
-            const quotes_url = "https://crm.zoho.com/crm/org682300086/tab/Quotes/" + quote_id;
-            window.open(quotes_url, '_blank').focus();
-            showCustomAlert("Application Record created. Please close the form.");
-        });
-    
-        console.log("Quotes record created successfully:", response);
+        const quote_id = quoteInsertRes.data[0].details.id;
+        const quotes_url = "https://crm.zoho.com/crm/org682300086/tab/Quotes/" +quote_id;
+        window.open(quotes_url, '_blank').focus();
+        showCustomAlert("Prospect and Quotes record has been created. Please close the form.");
+
+        console.log("Quotes record created successfully:", quoteInsertRes);
     } catch (error) {
-        console.error("Error inserting quotes record:", error);
+        console.error("Error creating records:", error);
     }
 }
 

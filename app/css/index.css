@@ -77,23 +77,36 @@ input[type="number"] {
 -moz-appearance: textfield;
 }
 
-.custom-alert-content {
-background-color: #fff;
-padding: 24px 32px;
-border-radius: 12px;
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-text-align: center;
-max-width: 90%;
-width: 360px;
-font-family: sans-serif;
-}
-
-.custom-alert-content p {
-margin-bottom: 16px;
-font-size: 16px;
-color: #333;
-}
-
-.hidden {
-display: none;
-}
+.custom-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .custom-alert-content {
+    background-color: #fff;
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 90%;
+    width: 360px;
+    font-family: sans-serif;
+  }
+  
+  .custom-alert-content p {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
