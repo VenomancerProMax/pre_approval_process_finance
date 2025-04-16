@@ -88,7 +88,7 @@ async function create_record(event) {
         });
         const deal_number = getDeal.data[0].Deal_Control_Number;
 
-        const updated_deal_name = `${deal_number}-${account_name} for Pre-Approval`;
+        const updated_deal_name = `${deal_number} - ${account_name} for Pre-Approval`;
 
         const updateDealRes = await ZOHO.CRM.API.updateRecord({
             Entity: "Deals",
@@ -119,8 +119,9 @@ async function create_record(event) {
             "Valid_Till": current_date,
             "Contact_Name": contact_id,
             "Deal_Name": updated_deal_id,
+            "Quote_Stage": "Closed Won",
             "Layout": "3769920000000238501"
-        };        
+        };
 
         const quoteInsertRes = await ZOHO.CRM.API.insertRecord({
             Entity: "Quotes",
