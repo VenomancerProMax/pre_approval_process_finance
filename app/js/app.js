@@ -106,6 +106,15 @@ async function create_record(event) {
         console.log("UPDATED DEAL ID: ", updated_deal_id);
         console.log("UPDATED DEAL NAME: " , updated_deal_name);
 
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const valid_till_date = new Date(year, month, 0);
+        const valid_till = `${valid_till_date.getFullYear()}-${String(valid_till_date.getMonth() + 1).padStart(2, '0')}-${String(valid_till_date.getDate()).padStart(2, '0')}`;
+        console.log("VALID TILL DATE: ", valid_till);
+
+
         const quotes_data = {
             "Subject": "TLZ Internal - IFZA Pre-approval",
             "Product_Details": [
@@ -119,7 +128,7 @@ async function create_record(event) {
             "Finance_Clearance": true,
             "Process_Clearance": true,
             "Quote_Linked_to_Prospect": true,
-            "Valid_Till": current_date,
+            "Valid_Till": valid_till,
             "Contact_Name": contact_id,
             "Deal_Name": updated_deal_id,
             "Quote_Stage": "Closed Won",
