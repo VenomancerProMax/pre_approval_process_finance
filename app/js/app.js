@@ -1,5 +1,4 @@
 let account_id, prospect_number, account_name, contact_id, prospect_name, mobile_number, email, product_id, product_unit_price;
-
 function showCustomAlert(message) {
     const alertBox = document.getElementById("custom-alert");
     const alertMessage = alertBox.querySelector("p");
@@ -93,20 +92,19 @@ async function create_record(event) {
 
         const updated_deal_name = `${deal_number} - ${account_name} for Pre-Approval`;
 
-        const updateDealRes = await ZOHO.CRM.API.updateRecord({
-            Entity: "Deals",
-            APIData: {
-                "id": deal_id, 
-                "Deal_Name": updated_deal_name,
-                "Stage": "Closed Won"
-            }
-        });
+        // const updateDealRes = await ZOHO.CRM.API.updateRecord({
+        //     Entity: "Deals",
+        //     APIData: {
+        //         "id": deal_id, 
+        //         "Deal_Name": updated_deal_name,
+        //         "Stage": "Closed Won",
+        //         "Quote_Assigned": quote_id,
+        //     }
+        // });
 
-        const updated_deal_id = updateDealRes.data[0].details.id
-        console.log("UPDATED DEAL ID: ", updated_deal_id);
-        console.log("UPDATED DEAL NAME: " , updated_deal_name);
-
-
+        // const updated_deal_id = updateDealRes.data[0].details.id
+        // console.log("UPDATED DEAL ID: ", updated_deal_id);
+        // console.log("UPDATED DEAL NAME: " , updated_deal_name);
         const today = new Date();
         const year = today.getFullYear();
         const month = today.getMonth() + 1;
@@ -130,7 +128,7 @@ async function create_record(event) {
             "Quote_Linked_to_Prospect": true,
             "Valid_Till": valid_till,
             "Contact_Name": contact_id,
-            "Deal_Name": updated_deal_id,
+            "Deal_Name": deal_id,
             "Quote_Stage": "Closed Won",
             "Layout": "3769920000000238501"
         };
@@ -141,6 +139,16 @@ async function create_record(event) {
             Trigger: ["workflow"],
         });
         const quote_id = quoteInsertRes.data[0].details.id;
+        const updateDealRes = await ZOHO.CRM.API.updateRecord({
+            Entity: "Deals",
+            APIData: {
+                "id": deal_id, 
+                "Deal_Name": updated_deal_name,
+                "Stage": "Closed Won",
+                "Quote_Assigned": quote_id
+            }
+        });
+        
         const quotes_url = "https://crm.zoho.com/crm/org682300086/tab/Quotes/" +quote_id;
         window.open(quotes_url, '_blank').focus();
         showCustomAlert("Prospect and Quote record has been created. Please close the form.");
