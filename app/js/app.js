@@ -67,9 +67,12 @@ async function create_record(event) {
         "Stage": "New Prospect",
         "Email_Address": email,
         "Mobile": mobile_number,
-        "Layout": "3769920000000091023",
+        "Layout": "3769920000000276241",
         "Commission_Amount": 0,
-        "Dashboard_Amount": 0
+        "Dashboard_Amount": 0,
+        "Pipeline": "Standard (Sales Layout)",
+        "IFZA_Potential": "NO",
+
     };
 
     try {
